@@ -16,7 +16,7 @@ class Database(object):
         print(self.name)
         print(self.hub)
 
-    def __init__(self, name, hub, session):
+    def __init__(self, name, hub, session,addr):
         """Constructor
 
         Arguments:
@@ -30,5 +30,5 @@ class Database(object):
         self.hub = hub
         self.session = session
         self.node = self.session.addobj(cls=pycore.nodes.CoreNode, name=name)
-        self.node.newnetif(self.hub, ["10.0.0.3/24"])
+        self.node.newnetif(self.hub, [addr])
         logging.info("Database instance created")

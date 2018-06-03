@@ -14,9 +14,9 @@ class Xgrid(object):
         super(Xgrid, self).__init__()
         self.session = pycore.Session(persistent=True)
         self.hub = self.session.addobj(cls=pycore.nodes.HubNode, name=hub_name)
-        self.database = Database("database", self.hub, self.session)
-        self.director = Director("director", self.hub, self.session)
-        self.publisher = Publisher("publisher", self.hub, self.session)
+        self.database = Database("database", self.hub, self.session,"10.0.0.3/24")
+        self.director = Director("director", self.hub, self.session,"10.0.0.1/24")
+        self.publisher = Publisher("publisher", self.hub, self.session,"10.0.0.2/24")
 
     def destroy_session(self):
         """
