@@ -1,6 +1,18 @@
+import rpyc
 import logging
 import logging.config
 from core import pycore
+from rpyc.utils.server import ThreadedServer
+
+
+class MyPublisherService(rpyc.Service):
+    """MyPublisherService has the rpyc implmentation so send the data to the database"""
+
+    def __init__(self):
+        super(MyPublisher, self).__init__()
+
+    def exposed_check_connection(self):
+        return "CONNECTED"
 
 
 class Publisher(object):
@@ -23,3 +35,9 @@ class Publisher(object):
         self.node = self.session.addobj(cls=pycore.nodes.CoreNode, name=name)
         self.node.newnetif(self.hub, [addr])
         logging.info("Publisher instance created")
+
+    def startServer(self):
+        self.t = ThreadedServer(
+            MyPublisherService, hostname="10.0.0.1", port=18861)
+        self.t.start()
+        logging.info("Server ended")
