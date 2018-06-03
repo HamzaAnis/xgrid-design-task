@@ -16,13 +16,13 @@ class Database(object):
         print(self.name)
         print(self.hub)
 
-    def __init__(self, name, hub, session,addr):
+    def __init__(self, name, hub, session, addr):
         """Constructor
-
         Arguments:
             name {[str]} -- [Name for the node]
             hub {[HubNode]} -- [Hubnode of which the nodes will be connceted]
             session {[Session]} -- [Session of pycore network]
+            addr{[]} -- [Addr of the node]
         """
         logging.config.fileConfig('logging.conf')
         super(Database, self).__init__()
