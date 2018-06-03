@@ -5,6 +5,7 @@ from core import pycore
 import logging
 import logging.config
 
+
 class Xgrid(object):
     """Starting point/ Main of the program"""
 
@@ -24,7 +25,21 @@ class Xgrid(object):
         self.session.shutdown()
         logging.info("Session destroyed!")
 
+    def test_ping(self):
+        """To check the connection
+        """
+        #Publisher
+        err=self.director.node.icmd(["ping", "-c", "5", "10.0.0.2"])
+        if err !=0:
+            logging.critical("Publisher not reached!")            
+
+        # Database
+        err=self.director.node.icmd(["ping", "-c", "5", "10.0.0.3"])
+        if err!=0:
+            logging.critical("Database not reached!")
+
 
 if __name__ == "__main__":
     X = Xgrid("Root")
+    X.test_ping()
     X.destroy_session()

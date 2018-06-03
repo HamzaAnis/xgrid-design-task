@@ -2,6 +2,7 @@ from core import pycore
 import logging
 import logging.config
 
+
 class Database(object):
     """ It receives and parse the packets and extract the src 
     IP  from  each  one  and  compare  that  IP  to  the  contents  of  another  file  called  "blacklist_ip_list.txt".  The  file 
@@ -17,7 +18,7 @@ class Database(object):
 
     def __init__(self, name, hub, session):
         """Constructor
-        
+
         Arguments:
             name {[str]} -- [Name for the node]
             hub {[HubNode]} -- [Hubnode of which the nodes will be connceted]
@@ -27,7 +28,7 @@ class Database(object):
         super(Database, self).__init__()
         self.name = name
         self.hub = hub
-        self.session=session
+        self.session = session
         self.node = self.session.addobj(cls=pycore.nodes.CoreNode, name=name)
-        self.node.newnetif(self.hub,["10.0.0.3/24"])
+        self.node.newnetif(self.hub, ["10.0.0.3/24"])
         logging.info("Database instance created")
