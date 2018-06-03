@@ -1,6 +1,7 @@
 import logging
 import logging.config
 from core import pycore
+import rpyc
 
 
 class Director(object):
@@ -26,3 +27,8 @@ class Director(object):
         self.addr = addr
         self.node.newnetif(self.hub, [self.addr])
         logging.info("Director instance created")
+
+    def signal_publisher(self):
+        logging.info("Checking connection")
+        self.c = rpyc.connect("10.0.0.1", 18800)
+        logging.info(self.c.root.check_connection())

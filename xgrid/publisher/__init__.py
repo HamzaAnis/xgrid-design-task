@@ -8,9 +8,6 @@ from rpyc.utils.server import ThreadedServer
 class MyPublisherService(rpyc.Service):
     """MyPublisherService has the rpyc implmentation so send the data to the database"""
 
-    def __init__(self):
-        super(MyPublisher, self).__init__()
-
     def exposed_check_connection(self):
         return "CONNECTED"
 
@@ -38,6 +35,6 @@ class Publisher(object):
 
     def startServer(self):
         self.t = ThreadedServer(
-            MyPublisherService, hostname="10.0.0.1", port=18861)
+            MyPublisherService, hostname="10.0.0.1", port=18800)
         self.t.start()
         logging.info("Server ended")

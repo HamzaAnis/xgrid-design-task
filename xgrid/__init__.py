@@ -5,6 +5,8 @@ from core import pycore
 import logging
 import logging.config
 import threading
+import rpyc
+from time import sleep
 
 
 class Xgrid(object):
@@ -53,7 +55,8 @@ if __name__ == "__main__":
     except Exception as e:
         logging.critical(e)
         raise e
-    
+
+    X.director.signal_publisher()
     # Input to terminate the rpyc server
     while(1):
         if(input() == 1):
