@@ -69,11 +69,13 @@ if __name__ == "__main__":
                "Enter 4 to exit.", "red")
         choice = input()
         if choice == 1:
-            pass
+            ip = str(raw_input("Enter source Ip for the packet: "))
+            X.director.send_one(ip)
         elif choice == 2:
-            print("2 pressed")
+            num = int(raw_input("Enter number of packets to generate: "))
+            X.director.send_multiple_packet(num)
         elif choice == 3:
-            print("3 pressed")
+            print(X.director.get_packet_count())
         else:
             break
     if t1.isAlive():
