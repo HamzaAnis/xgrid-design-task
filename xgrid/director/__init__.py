@@ -29,6 +29,6 @@ class Director(object):
         logging.info("Director instance created")
 
     def signal_publisher(self,hostname_,port_):
-        logging.info("Checking connection")
+        logging.info("Checking publisher service")
         self.c = rpyc.connect(hostname_, port_)
         logging.info(self.c.root.check_connection())

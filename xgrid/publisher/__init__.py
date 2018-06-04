@@ -9,7 +9,7 @@ class MyPublisherService(rpyc.Service):
     """MyPublisherService has the rpyc implmentation so send the data to the database"""
 
     def exposed_check_connection(self):
-        return "CONNECTED"
+        return "PUBLISH SERVICE CONNECTED"
 
 
 class Publisher(object):
@@ -33,8 +33,20 @@ class Publisher(object):
         self.node.newnetif(self.hub, [addr])
         logging.info("Publisher instance created")
 
-    def startServer(self,hostname_,port_):
+    def startServer(self, hostname_, port_):
+        """It starts the rpyc server for the publisher
+
+        Arguments:
+            hostname_ {[str]} -- [ip addr]
+            port_ {[int]} -- [port for the rpyc]
+        """
+
         self.t = ThreadedServer(
             MyPublisherService, hostname=hostname_, port=port_)
         self.t.start()
         logging.info("Server ended")
+
+    def signal_database(self, hostname_, port_):
+        logging.info("Checking database service")
+        self.c = rpyc.connect(hostname_, port_)
+        logging.info(self.c.root.check_connection())

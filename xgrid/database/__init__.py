@@ -2,6 +2,15 @@ from core import pycore
 import logging
 import logging.config
 import json
+import rpyc
+from rpyc.utils.server import ThreadedServer
+
+
+class DatabaseService(rpyc.Service):
+    """DatabaseService has the rpyc implmentation so send the data to the database"""
+
+    def exposed_check_connection(self):
+        return "DATABASE SERVICE CONNECTED"
 
 
 class Database(object):
@@ -70,3 +79,16 @@ class Database(object):
             json.dump(self.block_ips, file)
         with open(packet_count, 'w') as file:
             json.dump(self.block_ip_packet_count, file)
+
+    def startServer(self, hostname_, port_):
+        """It starts the rpyc server for the database
+
+        Arguments:
+            hostname_ {[str]} -- [ip addr]
+            port_ {[int]} -- [port for the rpyc]
+        """
+
+        self.t = ThreadedServer(
+            DatabaseService, hostname=hostname_, port=port_)
+        self.t.start()
+        logging.info("Server ended")
