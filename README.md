@@ -1,6 +1,7 @@
 ## Design Task
 
 [![N|Solid](https://www.xgrid.co/wp-content/uploads/2018/02/logo.png)](https://www.xgrid.co/)
+
 Dependenices:
   - [Pycore][l1]
   - [RPyc][l2]
