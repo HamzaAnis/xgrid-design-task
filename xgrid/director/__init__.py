@@ -28,7 +28,12 @@ class Director(object):
         self.node.newnetif(self.hub, [self.addr])
         logging.info("Director instance created")
 
-    def signal_publisher(self,hostname_,port_):
-        logging.info("Checking publisher service")
-        self.c = rpyc.connect(hostname_, port_)
-        logging.info(self.c.root.check_connection())
+    def init_connections(self, hostname_, port_,hostname_d,port_d):
+        logging.info("Initializing publisher service")
+        self.publisher_conn = rpyc.connect(hostname_, port_)
+        self.port_d=port_d
+        self.hostname_d=hostname_d
+        logging.info(self.publisher_conn.root.check_database_connection(hostname_d,port_d))
+
+    def close_server_connection(self):
+        self.publisher_conn.close()

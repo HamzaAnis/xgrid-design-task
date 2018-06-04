@@ -7,6 +7,7 @@ import logging.config
 import threading
 import rpyc
 from time import sleep
+from termcolor import cprint
 
 
 class Xgrid(object):
@@ -59,18 +60,28 @@ if __name__ == "__main__":
         logging.critical(e)
         raise e
 
-    X.director.signal_publisher("10.0.0.2", 18800)
-    X.publisher.signal_database("10.0.0.3", 18801)
+    X.director.init_connections("10.0.0.2", 18800, "10.0.0.3", 18801)
     # Input to terminate the rpyc server
     while(1):
-        if(input() == 1):
+        cprint("\nEnter 1 to generate a packet with specific IP.\n" +
+               "Enter 2 to generate a number of packets with random IPs.\n" +
+               "Enter 3 to list count_ip.txt.\n" +
+               "Enter 4 to exit.", "red")
+        choice = input()
+        if choice == 1:
+            pass
+        elif choice == 2:
+            print("2 pressed")
+        elif choice == 3:
+            print("3 pressed")
+        else:
             break
     if t1.isAlive():
         try:
             t1._Thread__stop()
             t2._Thread__stop()
+            X.director.close_server_connection()
             logging.info("Rpyc server thread Stopped")
-        except:
-            print("Yes")
-            logging.critical("Not terminated")
+        except Exception as e:
+            logging.critical(e)
     X.destroy_session()

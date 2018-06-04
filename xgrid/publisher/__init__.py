@@ -8,8 +8,11 @@ from rpyc.utils.server import ThreadedServer
 class MyPublisherService(rpyc.Service):
     """MyPublisherService has the rpyc implmentation so send the data to the database"""
 
-    def exposed_check_connection(self):
-        return "PUBLISH SERVICE CONNECTED"
+    def exposed_check_database_connection(self, hostname_, port_):
+        logging.info("Initializing database service")
+        database_conn = rpyc.connect(hostname_, port_)
+        logging.info(database_conn.root.check_connection())
+        database_conn.close()
 
 
 class Publisher(object):
@@ -46,7 +49,8 @@ class Publisher(object):
         self.t.start()
         logging.info("Server ended")
 
-    def signal_database(self, hostname_, port_):
-        logging.info("Checking database service")
+    def init_database_connection(self, hostname_, port_):
+        logging.info("Initializing database service")
         self.c = rpyc.connect(hostname_, port_)
         logging.info(self.c.root.check_connection())
+        # self.c.close()
