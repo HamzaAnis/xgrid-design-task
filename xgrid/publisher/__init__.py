@@ -26,10 +26,14 @@ class MyPublisherService(rpyc.Service):
             ip = '{}.{}.{}.{}'.format(
                 *__import__('random').sample(range(0, 255), 4))
             packets.append(IP(src=ip, dst="10.0.0.1"))
+        database_conn = rpyc.connect(hostname_, port_)
+        result=database_conn.root.check_multiple_packets(packets)
+        database_conn.close()
 
     def exposed_get_packet_count(self, hostname_, port_):
         database_conn = rpyc.connect(hostname_, port_)
         result=database_conn.root.get_count_list()
+        database_conn.close()
         return result
 
 

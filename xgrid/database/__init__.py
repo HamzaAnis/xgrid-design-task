@@ -29,6 +29,10 @@ class DatabaseService(rpyc.Service):
 
         return self.to_string(block_ip_packet_count)
 
+    def exposed_check_multiple_packets(self,packets):
+        # for v in packets:
+        #     logging.info(v.summary())
+        logging.info(len(packets))
 
 class Database(object):
     """ It receives and parse the packets and extract the src 
