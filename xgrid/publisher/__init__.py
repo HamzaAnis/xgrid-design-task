@@ -33,8 +33,8 @@ class Publisher(object):
         self.node.newnetif(self.hub, [addr])
         logging.info("Publisher instance created")
 
-    def startServer(self):
+    def startServer(self,hostname_,port_):
         self.t = ThreadedServer(
-            MyPublisherService, hostname="10.0.0.1", port=18800)
+            MyPublisherService, hostname=hostname_, port=port_)
         self.t.start()
         logging.info("Server ended")

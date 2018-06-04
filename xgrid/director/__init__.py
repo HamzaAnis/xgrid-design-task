@@ -28,7 +28,7 @@ class Director(object):
         self.node.newnetif(self.hub, [self.addr])
         logging.info("Director instance created")
 
-    def signal_publisher(self):
+    def signal_publisher(self,hostname_,port_):
         logging.info("Checking connection")
-        self.c = rpyc.connect("10.0.0.1", 18800)
+        self.c = rpyc.connect(hostname_, port_)
         logging.info(self.c.root.check_connection())

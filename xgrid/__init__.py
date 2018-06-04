@@ -50,13 +50,13 @@ if __name__ == "__main__":
     # X.test_ping()
     try:
         t1 = threading.Thread(
-            group=None, target=X.publisher.startServer, name="RpyC server")
+            group=None, target=X.publisher.startServer, name="RpyC server", args=("10.0.0.2", 18800))
         t1.start()
     except Exception as e:
         logging.critical(e)
         raise e
 
-    X.director.signal_publisher()
+    X.director.signal_publisher("10.0.0.2", 18800)
     # Input to terminate the rpyc server
     while(1):
         if(input() == 1):
