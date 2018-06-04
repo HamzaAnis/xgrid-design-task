@@ -19,6 +19,8 @@ class DatabaseService(rpyc.Service):
             value = value+v["ip"]+" -----  "+str(v["count"])+"\n"
         return value
 
+    def check_ip_in_database(self,value):
+        logging.info("Checking "+str(value))
     def exposed_get_count_list(self):
         try:
             with open("count_ip.json") as file:
@@ -31,12 +33,18 @@ class DatabaseService(rpyc.Service):
         return self.to_string(block_ip_packet_count)
 
     def exposed_check_multiple_packets(self, packets):
-        # for v in packets:
-        #     logging.info(v.summary())
+        logging.info("Multiple packets inspection")
         logging.info(len(packets))
+        for v in packets:
+            value=v.summary()
+            logging.info(value)
+            self.check_ip_in_database(value)
 
     def exposed_check_single_packets(self, packet):
-        logging.info(packet.summary())
+        logging.info("Singe Packet inspection")
+        value=packet.summary()
+        logging.info(value)
+        self.check_ip_in_database(value)
 
 
 class Database(object):
@@ -115,6 +123,6 @@ class Database(object):
         """
 
         self.t = ThreadedServer(
-            DatabaseService, hostname=hostname_, port=port_, protocol_config={"allow_public_attrs": True, "allow_all_attrs": True})
+            DatabaseService, hostname=hostname_, port=port_, protocol_config={"allow_public_attrs": True, "allow_all_attrs": True, "allow_pickle ": True, "allow_getattr": True})
         self.t.start()
         logging.info("Server ended")

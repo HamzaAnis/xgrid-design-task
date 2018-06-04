@@ -19,8 +19,9 @@ class MyPublisherService(rpyc.Service):
         packet = IP(src=ip, dst="10.0.0.3")
         logging.info("Packet summary: "+packet.summary())
         logging.info(packet[0].getlayer(IP).src)
-        database_conn = rpyc.connect(hostname_, port_,config={"allow_public_attrs": True,"allow_all_attrs": True})
-        result=database_conn.root.check_single_packets(packet[0])
+        database_conn = rpyc.connect(hostname_, port_, config={
+                                     "allow_public_attrs": True, "allow_all_attrs": True, "allow_getattr": True})
+        result = database_conn.root.check_single_packets(packet[0])
         database_conn.close()
 
     def exposed_send_multiple_packets(self, count, hostname_, port_):
@@ -29,13 +30,14 @@ class MyPublisherService(rpyc.Service):
             ip = '{}.{}.{}.{}'.format(
                 *__import__('random').sample(range(0, 255), 4))
             packets.append(IP(src=ip, dst="10.0.0.1"))
-        database_conn = rpyc.connect(hostname_, port_)
-        result=database_conn.root.check_multiple_packets(packets)
+        database_conn = rpyc.connect(hostname_, port_, config={
+                                     "allow_public_attrs": True, "allow_all_attrs": True, "allow_getattr": True})
+        result = database_conn.root.check_multiple_packets(packets)
         database_conn.close()
 
     def exposed_get_packet_count(self, hostname_, port_):
         database_conn = rpyc.connect(hostname_, port_)
-        result=database_conn.root.get_count_list()
+        result = database_conn.root.get_count_list()
         database_conn.close()
         return result
 
@@ -70,7 +72,7 @@ class Publisher(object):
         """
 
         self.t = ThreadedServer(
-            MyPublisherService, hostname=hostname_, port=port_,protocol_config = {"allow_public_attrs" : True, "allow_all_attrs": True})
+            MyPublisherService, hostname=hostname_, port=port_, protocol_config={"allow_public_attrs": True, "allow_all_attrs": True, "allow_pickle ": True, "allow_getattr": True})
         self.t.start()
         logging.info("Server ended")
 
