@@ -15,20 +15,22 @@ class MyPublisherService(rpyc.Service):
         logging.info(database_conn.root.check_connection())
         database_conn.close()
 
-    def exposed_send_one_packet(self, ip):
+    def exposed_send_one_packet(self, ip, hostname_, port_):
         packet = IP(src=ip, dst="10.0.0.3")
         logging.info("Packet summary: "+packet.summary())
         logging.info(packet[0].getlayer(IP).src)
 
-    def exposed_send_multiple_packets(self, count):
+    def exposed_send_multiple_packets(self, count, hostname_, port_):
         packets = []
         for i in range(0, count):
             ip = '{}.{}.{}.{}'.format(
                 *__import__('random').sample(range(0, 255), 4))
             packets.append(IP(src=ip, dst="10.0.0.1"))
 
-    def exposed_get_packet_count(self):
-        return "TODO"
+    def exposed_get_packet_count(self, hostname_, port_):
+        database_conn = rpyc.connect(hostname_, port_)
+        result=database_conn.root.get_count_list()
+        return result
 
 
 class Publisher(object):

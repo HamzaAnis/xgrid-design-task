@@ -12,6 +12,23 @@ class DatabaseService(rpyc.Service):
     def exposed_check_connection(self):
         return "DATABASE SERVICE CONNECTED"
 
+    def to_string(self, json_arr):
+        value = "Ip\t\t  Count\n"
+        for v in json_arr:
+            value = value+v["ip"]+" -----  "+str(v["count"])+"\n"
+        return value
+
+    def exposed_get_count_list(self):
+        try:
+            with open("count_ip.json") as file:
+                block_ip_packet_count = json.load(file)
+        except IOError:
+            logging.critical("Error while loading " + packet_count)
+            self.block_ip_packet_count = []
+        logging.info(block_ip_packet_count)
+
+        return self.to_string(block_ip_packet_count)
+
 
 class Database(object):
     """ It receives and parse the packets and extract the src 
@@ -38,7 +55,7 @@ class Database(object):
         logging.info("Database instance created")
         self.block_ips = []
         self.block_ip_packet_count = []
-        self.load_files("blacklist_ip_list.json", "count_ip.json")
+        # self.load_files("blacklist_ip_list.json", "count_ip.json")
 
     def load_files(self, black_list, packet_count):
         """Loads the json files into the database

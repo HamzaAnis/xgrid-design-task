@@ -40,10 +40,12 @@ class Director(object):
         self.publisher_conn.close()
 
     def send_one(self, ip):
-        self.publisher_conn.root.send_one_packet(ip)
+        self.publisher_conn.root.send_one_packet(
+            ip, self.hostname_d, self.port_d)
 
     def send_multiple_packet(self, count):
-        self.publisher_conn.root.send_multiple_packets(count)
+        self.publisher_conn.root.send_multiple_packets(
+            count, self.hostname_d, self.port_d)
 
     def get_packet_count(self):
-        return self.publisher_conn.root.get_packet_count()
+        return self.publisher_conn.root.get_packet_count(self.hostname_d, self.port_d)
