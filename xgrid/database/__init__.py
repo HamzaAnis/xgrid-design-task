@@ -19,8 +19,9 @@ class DatabaseService(rpyc.Service):
             value = value+v["ip"]+" -----  "+str(v["count"])+"\n"
         return value
 
-    def check_ip_in_database(self,value):
-        logging.info("Checking "+str(value))
+    def check_ip_in_database(self, value):
+        logging.info("Checking "+(str(value)).split(">")[0].replace(" ",""))
+
     def exposed_get_count_list(self):
         try:
             with open("count_ip.json") as file:
@@ -36,13 +37,13 @@ class DatabaseService(rpyc.Service):
         logging.info("Multiple packets inspection")
         logging.info(len(packets))
         for v in packets:
-            value=v.summary()
+            value = v.summary()
             logging.info(value)
             self.check_ip_in_database(value)
 
     def exposed_check_single_packets(self, packet):
         logging.info("Singe Packet inspection")
-        value=packet.summary()
+        value = packet.summary()
         logging.info(value)
         self.check_ip_in_database(value)
 
