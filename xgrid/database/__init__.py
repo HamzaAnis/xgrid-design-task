@@ -13,6 +13,32 @@ class DatabaseService(rpyc.Service):
     def exposed_check_connection(self):
         return "DATABASE SERVICE CONNECTED"
 
+    def on_connect(self):
+        logging.info("On Connected trigered")
+        try:
+            with open("blacklist_ip_list.json") as file:
+                self.block_ips = json.load(file)
+        except:
+            logging.critical("Error while loading " + black_list)
+            self.block_ips = []
+
+        try:
+            with open("count_ip.json") as file:
+                self.block_ip_packet_count = json.load(file)
+        except IOError:
+            logging.critical("Error while loading " + packet_count)
+            self.block_ip_packet_count = []
+
+        logging.info("File readed into the database")
+
+        logging.info(self.block_ip_packet_count)
+        logging.info(self.block_ips)
+
+    def on_disconnect(self):
+        logging.info("Values saved to database")
+        with open("count_ip.json", 'w') as file:
+            json.dump(self.block_ip_packet_count, file)
+
     def to_string(self, json_arr):
         value = "Ip\t\t  Count\n"
         for v in json_arr:
@@ -20,18 +46,21 @@ class DatabaseService(rpyc.Service):
         return value
 
     def check_ip_in_database(self, value):
-        logging.info("Checking "+(str(value)).split(">")[0].replace(" ",""))
-
+        ip = (str(value)).split(">")[0].replace(" ", "")
+        logging.info("Checking "+ip)
+        for v in self.block_ips:
+            lst=v["ip"]
+            for val in lst:
+                if val==ip:
+                    logging.info("Black List packet received for "+val)
+                    self.update_count_record(val)
+    def update_count_record(self,ip):
+        for v in self.block_ip_packet_count:
+            if v["ip"]==ip:
+                v["count"]=v["count"]+1
+                logging.info(ip+" count incremented")
     def exposed_get_count_list(self):
-        try:
-            with open("count_ip.json") as file:
-                block_ip_packet_count = json.load(file)
-        except IOError:
-            logging.critical("Error while loading " + packet_count)
-            self.block_ip_packet_count = []
-        logging.info(block_ip_packet_count)
-
-        return self.to_string(block_ip_packet_count)
+        return self.to_string(self.block_ip_packet_count)
 
     def exposed_check_multiple_packets(self, packets):
         logging.info("Multiple packets inspection")
