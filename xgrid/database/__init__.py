@@ -4,6 +4,7 @@ import logging.config
 import json
 import rpyc
 from rpyc.utils.server import ThreadedServer
+from scapy.all import *
 
 
 class DatabaseService(rpyc.Service):
@@ -29,10 +30,14 @@ class DatabaseService(rpyc.Service):
 
         return self.to_string(block_ip_packet_count)
 
-    def exposed_check_multiple_packets(self,packets):
+    def exposed_check_multiple_packets(self, packets):
         # for v in packets:
         #     logging.info(v.summary())
         logging.info(len(packets))
+
+    def exposed_check_single_packets(self, packet):
+        logging.info(packet.summary())
+
 
 class Database(object):
     """ It receives and parse the packets and extract the src 
@@ -110,6 +115,6 @@ class Database(object):
         """
 
         self.t = ThreadedServer(
-            DatabaseService, hostname=hostname_, port=port_)
+            DatabaseService, hostname=hostname_, port=port_, protocol_config={"allow_public_attrs": True, "allow_all_attrs": True})
         self.t.start()
         logging.info("Server ended")

@@ -19,6 +19,9 @@ class MyPublisherService(rpyc.Service):
         packet = IP(src=ip, dst="10.0.0.3")
         logging.info("Packet summary: "+packet.summary())
         logging.info(packet[0].getlayer(IP).src)
+        database_conn = rpyc.connect(hostname_, port_,config={"allow_public_attrs": True,"allow_all_attrs": True})
+        result=database_conn.root.check_single_packets(packet[0])
+        database_conn.close()
 
     def exposed_send_multiple_packets(self, count, hostname_, port_):
         packets = []
@@ -67,7 +70,7 @@ class Publisher(object):
         """
 
         self.t = ThreadedServer(
-            MyPublisherService, hostname=hostname_, port=port_)
+            MyPublisherService, hostname=hostname_, port=port_,protocol_config = {"allow_public_attrs" : True, "allow_all_attrs": True})
         self.t.start()
         logging.info("Server ended")
 
